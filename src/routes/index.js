@@ -4,6 +4,8 @@ const router = Router();
 
 router.get("/email/",(req,res)=>{
     //---------------------------------------------------
+    try{
+    const {from,to,subject,text,html} = req.body;
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -16,19 +18,27 @@ router.get("/email/",(req,res)=>{
         }
       });
       transporter.verify().then(()=>{
-        console.log("ready for send emails");
+        console.log("Mensaje enviado");
       });
-
       transporter.sendMail({
-        from:'kemistry.clothing@gmail.com',
-        to:"krontroth@gmail.com;kemistry.clothing@gmail.com",
-        subject:"Confirmación de pedido en tienda Kemistry-Clothing",
-        text:"Confirmación de pedido en tienda Kemistry-Clothing",
-        html:"<b>Confirmación de pedido en tienda Kemistry-Clothing</b>"
+        from,
+        to,
+        subject,
+        text,
+        html
       });
 
     //---------------------------------------------------
-    //res.send("email");
+    res.send({
+      code:"200",
+      message:"Mensaje enviado con exito"
+    });
+    }catch(err){
+      res.send({
+        code:"501",
+        message:err
+      });
+    }
 })
 
 module.exports = router;
